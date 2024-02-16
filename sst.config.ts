@@ -1,4 +1,5 @@
-import { SSTConfig } from "sst";
+import { type SSTConfig } from "sst";
+import { Config, NextjsSite } from "sst/constructs";
 
 export default {
   config(_input) {
@@ -8,11 +9,16 @@ export default {
     };
   },
   stacks(app) {
-    // app.stack(function Site({ stack }) {
-    //   const site = new NextjsSite(stack, "site");
-    //   stack.addOutputs({
-    //     SiteUrl: site.url,
-    //   });
-    // });
+    app.stack(function Site({ stack }) {
+      const site = new NextjsSite(stack, "site");
+      stack.addOutputs({
+        SiteUrl: site.url,
+      });
+      // const api = new Api(stack, "api", {
+      //   routes: {
+      //     "GET /": "packages/functions/src/time.handler",
+      //   },
+      // });
+    });
   },
 } satisfies SSTConfig;

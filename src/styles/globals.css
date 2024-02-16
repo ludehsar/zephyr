@@ -77,12 +77,12 @@
 
 @layer utilities {
   body {
-    background: rgb(243, 232, 216);
+    background: rgb(233, 227, 184);
     background: radial-gradient(
       circle,
-      rgba(243, 232, 216, 1) 0%,
-      rgba(248, 249, 236, 1) 45%,
-      rgba(243, 232, 216, 1) 100%
+      rgba(233, 227, 184, 1) 0%,
+      rgba(245, 246, 233, 1) 50%,
+      rgba(233, 227, 184, 1) 100%
     );
   }
 }
