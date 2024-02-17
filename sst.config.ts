@@ -1,5 +1,8 @@
 import { type SSTConfig } from "sst";
-import { Config, NextjsSite } from "sst/constructs";
+import { AuthStack } from "./stacks/auth-stack";
+import { ApiStack } from "./stacks/api-stack";
+import { SiteStack } from "./stacks/site-stack";
+import { DatabaseStack } from "./stacks/database-stack";
 
 export default {
   config(_input) {
@@ -9,16 +12,6 @@ export default {
     };
   },
   stacks(app) {
-    app.stack(function Site({ stack }) {
-      const site = new NextjsSite(stack, "site");
-      stack.addOutputs({
-        SiteUrl: site.url,
-      });
-      // const api = new Api(stack, "api", {
-      //   routes: {
-      //     "GET /": "packages/functions/src/time.handler",
-      //   },
-      // });
-    });
+    app.stack(DatabaseStack).stack(ApiStack).stack(AuthStack).stack(SiteStack);
   },
 } satisfies SSTConfig;
