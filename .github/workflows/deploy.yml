@@ -1,6 +1,12 @@
 name: "Zephyr Deploy"
-
 on: [push]
+
+concurrency:
+  group: merge-${{ github.ref }}
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
@@ -10,7 +16,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
-      - name: Checkout Code
+      - name: Git clone the repository
         uses: actions/checkout@v3
 
       - name: Setup PNPM

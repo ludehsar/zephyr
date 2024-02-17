@@ -1,11 +1,7 @@
-import { NextjsSite, StackContext, use } from "sst/constructs";
-import { ApiStack } from "./api-stack";
+import { NextjsSite, StackContext } from "sst/constructs";
 
 export const SiteStack = ({ stack }: StackContext) => {
-  const { api } = use(ApiStack);
-  const site = new NextjsSite(stack, "site", {
-    bind: [api],
-  });
+  const site = new NextjsSite(stack, "site");
   stack.addOutputs({
     SiteUrl: site.url,
   });

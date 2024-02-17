@@ -4,12 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "sst bind next dev",
-    "dev-inspect": "sst bind NODE_OPTIONS='--inspect' next dev",
-    "build": "sst bind next build",
-    "start": "sst bind next start",
-    "lint": "next lint",
-    "lint-fix": "pnpm run eslint --fix ./",
-    "deploy": "sst deploy"
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
