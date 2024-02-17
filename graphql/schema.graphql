@@ -1,0 +1,10 @@
+type Query {
+  session: User
+}
+
+type User {
+  email: String!
+  name: String
+  planId: String
+  premiumTrialTaken: Boolean
+}

@@ -14,6 +14,6 @@ export const AuthStack = ({ stack }: StackContext) => {
   });
   auth.attach(stack, {
     api,
-    prefix: "/api/v1/auth",
+    prefix: "/auth",
   });
 };
