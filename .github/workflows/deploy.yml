@@ -1,5 +1,8 @@
 name: "Zephyr Deploy"
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 concurrency:
   group: merge-${{ github.ref }}
