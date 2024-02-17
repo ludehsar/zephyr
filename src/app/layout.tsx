@@ -1,11 +1,11 @@
 import "@/styles/globals.css";
-import { Inter as FontSans } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 import { Providers } from "./Providers";
 import { Toaster } from "@/components/ui/toaster";
 
-export const fontSans = FontSans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
+            inter.variable
           )}
         >
           {children}
