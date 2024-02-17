@@ -19,7 +19,7 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Deploy
-        run: npm sst deploy --stage prod
+        run: pnpm sst deploy --stage prod
