@@ -1,4 +1,4 @@
-[![Zephyr Deploy](https://github.com/ludehsar/zephyr/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/ludehsar/zephyr/actions/workflows/deploy.yml)
+[![Production](https://github.com/ludehsar/zephyr/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/ludehsar/zephyr/actions/workflows/deploy.yml)
 
 # Zephyr
 

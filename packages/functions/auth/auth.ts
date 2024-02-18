@@ -13,6 +13,19 @@ declare module "sst/node/auth" {
   }
 }
 
+const getOrCreateUserFromClaims = async (claims: Record<string, any>) => {
+  let user = (await User.fromEmail(claims.email!)).data;
+  if (!user) {
+    user = (
+      await User.create({
+        email: claims.email!,
+        name: claims.name,
+      })
+    ).data;
+  }
+  return user;
+};
+
 export const handler = AuthHandler({
   providers: {
     link: LinkAdapter({
@@ -23,15 +36,7 @@ export const handler = AuthHandler({
         };
       },
       onSuccess: async (claims) => {
-        let user = (await User.fromEmail(claims.email!)).data;
-        if (!user) {
-          user = (
-            await User.create({
-              email: claims.email!,
-              name: claims.name,
-            })
-          ).data;
-        }
+        const user = await getOrCreateUserFromClaims(claims);
         return Session.parameter({
           redirect: "http://localhost:3000",
           type: "user",
@@ -47,15 +52,7 @@ export const handler = AuthHandler({
       clientID: Config.GOOGLE_CLIENT_ID,
       onSuccess: async (tokenset) => {
         const claims = tokenset.claims();
-        let user = (await User.fromEmail(claims.email!)).data;
-        if (!user) {
-          user = (
-            await User.create({
-              email: claims.email!,
-              name: claims.name,
-            })
-          ).data;
-        }
+        const user = await getOrCreateUserFromClaims(claims);
         return Session.parameter({
           redirect: "http://localhost:3000",
           type: "user",
