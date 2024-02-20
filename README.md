@@ -17,3 +17,7 @@ Zephyr is an open-source time-tracking, invoice-management, and payment solution
 - **API**: GraphQL
 - **Payment**: Stripe, Paypal
 - **Style**: Tailwind, ShadCN UI
+
+## Architecture Decisions
+
+![High Level Architecture](./docs/HL.png)
