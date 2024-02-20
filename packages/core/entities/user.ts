@@ -7,7 +7,7 @@ export const UserEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "User",
+      entity: "user",
       service: "auth",
     },
     attributes: {
@@ -24,6 +24,10 @@ export const UserEntity = new Entity(
         default: false,
       },
       planId: {
+        type: "string",
+        default: "",
+      },
+      profilePicture: {
         type: "string",
         default: "",
       },
@@ -53,10 +57,13 @@ export function fromEmail(email: string) {
 }
 
 export function create(item: Info) {
-  return UserEntity.create({
-    email: item.email,
-    name: item.name,
-    planId: item.planId,
-    premiumTrialTaken: item.premiumTrialTaken,
-  }).go();
+  return UserEntity.create({ ...item }).go();
+}
+
+export function update(item: Info) {
+  return UserEntity.patch({ email: item.email })
+    .set({
+      ...item,
+    })
+    .go();
 }
