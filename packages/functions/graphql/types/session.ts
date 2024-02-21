@@ -4,6 +4,7 @@ import { requireUser } from "../requireUser";
 
 const UserType = builder.objectRef<User.Info>("User").implement({
   fields: (t) => ({
+    userId: t.exposeString("id"),
     email: t.exposeString("email"),
     name: t.exposeString("name", { nullable: true }),
     planId: t.exposeString("planId", { nullable: true }),
@@ -17,7 +18,12 @@ builder.queryFields((t) => ({
     nullable: true,
     resolve: async () => {
       const session = requireUser();
-      return (await User.fromEmail(session.properties.email)).data;
+      return (
+        await User.fromEmailAndUserId(
+          session.properties.email,
+          session.properties.id
+        )
+      ).data;
     },
   }),
 }));

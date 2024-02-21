@@ -8,10 +8,10 @@ export const UserEntity = new Entity(
     model: {
       version: "1",
       entity: "user",
-      service: "auth",
+      service: "zephyr",
     },
     attributes: {
-      userId: {
+      id: {
         type: "string",
         required: true,
         readOnly: true,
@@ -42,18 +42,18 @@ export const UserEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["userId"],
+          composite: ["id"],
         },
       },
       byPlan: {
         index: "gsi1",
         pk: {
-          field: "pk",
+          field: "gsi1pk",
           composite: ["planId"],
         },
         sk: {
-          field: "sk",
-          composite: ["userId"],
+          field: "gsi1sk",
+          composite: ["id"],
         },
       },
     },
@@ -66,7 +66,7 @@ export type Info = EntityItem<typeof UserEntity>;
 export function fromEmailAndUserId(email: string, userId: string) {
   return UserEntity.get({
     email,
-    userId,
+    id: userId,
   }).go();
 }
 
@@ -75,7 +75,7 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return UserEntity.update({ email: item.email, userId: item.userId })
+  return UserEntity.update({ email: item.email, id: item.id })
     .data((attribute, operations) => {
       operations.set(attribute.name, item.name || "");
       operations.set(attribute.planId, item.planId || "");
@@ -90,6 +90,6 @@ export function update(item: Info) {
 export function deletePermanently(email: string, userId: string) {
   return UserEntity.delete({
     email,
-    userId,
+    id: userId,
   }).go();
 }
