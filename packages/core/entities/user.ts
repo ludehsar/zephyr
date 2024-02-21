@@ -11,9 +11,15 @@ export const UserEntity = new Entity(
       service: "auth",
     },
     attributes: {
+      userId: {
+        type: "string",
+        required: true,
+        readOnly: true,
+      },
       email: {
         type: "string",
         required: true,
+        readOnly: true,
       },
       name: {
         type: "string",
@@ -27,20 +33,27 @@ export const UserEntity = new Entity(
         type: "string",
         default: "",
       },
-      profilePicture: {
-        type: "string",
-        default: "",
-      },
     },
     indexes: {
-      byEmail: {
+      primary: {
         pk: {
           field: "pk",
           composite: ["email"],
         },
         sk: {
           field: "sk",
-          composite: [],
+          composite: ["userId"],
+        },
+      },
+      byPlan: {
+        index: "gsi1",
+        pk: {
+          field: "pk",
+          composite: ["planId"],
+        },
+        sk: {
+          field: "sk",
+          composite: ["userId"],
         },
       },
     },
@@ -50,9 +63,10 @@ export const UserEntity = new Entity(
 
 export type Info = EntityItem<typeof UserEntity>;
 
-export function fromEmail(email: string) {
+export function fromEmailAndUserId(email: string, userId: string) {
   return UserEntity.get({
     email,
+    userId,
   }).go();
 }
 
@@ -61,9 +75,21 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return UserEntity.patch({ email: item.email })
-    .set({
-      ...item,
+  return UserEntity.update({ email: item.email, userId: item.userId })
+    .data((attribute, operations) => {
+      operations.set(attribute.name, item.name || "");
+      operations.set(attribute.planId, item.planId || "");
+      operations.set(
+        attribute.premiumTrialTaken,
+        item.premiumTrialTaken || false
+      );
     })
     .go();
+}
+
+export function deletePermanently(email: string, userId: string) {
+  return UserEntity.delete({
+    email,
+    userId,
+  }).go();
 }
