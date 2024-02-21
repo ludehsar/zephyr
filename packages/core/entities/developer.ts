@@ -1,17 +1,17 @@
 import { Entity, EntityItem } from "electrodb";
 import { Dynamo } from "./dynamo";
 
-export * as Client from "./client";
+export * as Developer from "./developer";
 
-export const ClientEntity = new Entity(
+export const DeveloperEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "client",
+      entity: "developer",
       service: "zephyr",
     },
     attributes: {
-      clientId: {
+      developerId: {
         type: "string",
         required: true,
         readOnly: true,
@@ -30,14 +30,14 @@ export const ClientEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["clientId"],
+          composite: ["developerId"],
         },
       },
-      byClient: {
+      byDeveloper: {
         index: "gsi",
         pk: {
           field: "gsi1pk",
-          composite: ["clientId"],
+          composite: ["developerId"],
         },
         sk: {
           field: "gsi1sk",
@@ -49,31 +49,31 @@ export const ClientEntity = new Entity(
   Dynamo.getConfiguration()
 );
 
-export type Info = EntityItem<typeof ClientEntity>;
+export type Info = EntityItem<typeof DeveloperEntity>;
 
 export function create(item: Info) {
-  return ClientEntity.create({ ...item }).go();
+  return DeveloperEntity.create({ ...item }).go();
 }
 
-export function listClientsByProjectId(projectId: string) {
-  return ClientEntity.query
+export function listDevelopersByProjectId(projectId: string) {
+  return DeveloperEntity.query
     .byProject({
       projectId,
     })
     .go();
 }
 
-export function listProjectsByClientId(clientId: string) {
-  return ClientEntity.query
-    .byClient({
-      clientId: clientId,
+export function listProjectsByDeveloperId(developerId: string) {
+  return DeveloperEntity.query
+    .byDeveloper({
+      developerId,
     })
     .go();
 }
 
-export function deletePermanently(projectId: string, clientId: string) {
-  return ClientEntity.delete({
+export function deletePermanently(projectId: string, developerId: string) {
+  return DeveloperEntity.delete({
     projectId,
-    clientId,
+    developerId,
   }).go();
 }
