@@ -7,12 +7,17 @@ export const UserEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "user",
-      service: "zephyr",
+      entity: "User",
+      service: "Zephyr",
     },
     attributes: {
       id: {
         type: "string",
+        required: true,
+        readOnly: true,
+      },
+      shardId: {
+        type: "number",
         required: true,
         readOnly: true,
       },
@@ -23,15 +28,14 @@ export const UserEntity = new Entity(
       },
       name: {
         type: "string",
-        default: "",
       },
       premiumTrialTaken: {
         type: "boolean",
         default: false,
       },
       planId: {
-        type: "string",
-        default: "",
+        type: ["FREE", "PREMIUM", "BUSINESS"] as const,
+        default: "FREE",
       },
     },
     indexes: {
@@ -42,14 +46,14 @@ export const UserEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["id"],
+          composite: [],
         },
       },
-      byPlan: {
+      list: {
         index: "gsi1",
         pk: {
           field: "gsi1pk",
-          composite: ["planId"],
+          composite: ["shardId"],
         },
         sk: {
           field: "gsi1sk",
@@ -63,10 +67,9 @@ export const UserEntity = new Entity(
 
 export type Info = EntityItem<typeof UserEntity>;
 
-export function fromEmailAndUserId(email: string, userId: string) {
+export function get(email: string) {
   return UserEntity.get({
     email,
-    id: userId,
   }).go();
 }
 
@@ -75,10 +78,10 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return UserEntity.update({ email: item.email, id: item.id })
+  return UserEntity.update({ email: item.email })
     .data((attribute, operations) => {
       operations.set(attribute.name, item.name || "");
-      operations.set(attribute.planId, item.planId || "");
+      operations.set(attribute.planId, item.planId || "FREE");
       operations.set(
         attribute.premiumTrialTaken,
         item.premiumTrialTaken || false
@@ -87,9 +90,8 @@ export function update(item: Info) {
     .go();
 }
 
-export function deletePermanently(email: string, userId: string) {
+export function deletePermanently(email: string) {
   return UserEntity.delete({
     email,
-    id: userId,
   }).go();
 }

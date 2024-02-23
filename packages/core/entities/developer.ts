@@ -7,8 +7,8 @@ export const DeveloperEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "developer",
-      service: "zephyr",
+      entity: "Developer",
+      service: "Zephyr",
     },
     attributes: {
       developerId: {
@@ -20,6 +20,15 @@ export const DeveloperEntity = new Entity(
         type: "string",
         required: true,
         readOnly: true,
+      },
+      teamId: {
+        type: "string",
+        required: true,
+      },
+      hourlyRate: {
+        type: "number",
+        required: true,
+        default: 25,
       },
     },
     indexes: {
@@ -34,7 +43,7 @@ export const DeveloperEntity = new Entity(
         },
       },
       byDeveloper: {
-        index: "gsi",
+        index: "gsi1",
         pk: {
           field: "gsi1pk",
           composite: ["developerId"],
@@ -55,6 +64,13 @@ export function create(item: Info) {
   return DeveloperEntity.create({ ...item }).go();
 }
 
+export function get(developerId: string, projectId: string) {
+  return DeveloperEntity.get({
+    developerId,
+    projectId,
+  }).go();
+}
+
 export function listDevelopersByProjectId(projectId: string) {
   return DeveloperEntity.query
     .byProject({
@@ -67,6 +83,20 @@ export function listProjectsByDeveloperId(developerId: string) {
   return DeveloperEntity.query
     .byDeveloper({
       developerId,
+    })
+    .go();
+}
+
+export function update(item: Info) {
+  return DeveloperEntity.update({
+    developerId: item.developerId,
+    projectId: item.projectId,
+  })
+    .data((attribute, operations) => {
+      operations.set(attribute.hourlyRate, item.hourlyRate || 25);
+      if (item.teamId) {
+        operations.set(attribute.teamId, item.teamId);
+      }
     })
     .go();
 }

@@ -7,8 +7,8 @@ export const ClientEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "client",
-      service: "zephyr",
+      entity: "Client",
+      service: "Zephyr",
     },
     attributes: {
       clientId: {
@@ -34,7 +34,7 @@ export const ClientEntity = new Entity(
         },
       },
       byClient: {
-        index: "gsi",
+        index: "gsi1",
         pk: {
           field: "gsi1pk",
           composite: ["clientId"],
@@ -53,6 +53,13 @@ export type Info = EntityItem<typeof ClientEntity>;
 
 export function create(item: Info) {
   return ClientEntity.create({ ...item }).go();
+}
+
+export function get(clientId: string, projectId: string) {
+  return ClientEntity.get({
+    clientId,
+    projectId,
+  }).go();
 }
 
 export function listClientsByProjectId(projectId: string) {

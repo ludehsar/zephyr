@@ -7,8 +7,8 @@ export const ProjectEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "project",
-      service: "zephyr",
+      entity: "Project",
+      service: "Zephyr",
     },
     attributes: {
       id: {
@@ -39,7 +39,7 @@ export const ProjectEntity = new Entity(
 
 export type Info = EntityItem<typeof ProjectEntity>;
 
-export function fromId(id: string) {
+export function get(id: string) {
   return ProjectEntity.get({
     id,
   }).go();

@@ -6,6 +6,7 @@ import {
 } from "sst/node/auth";
 import { Config } from "sst/node/config";
 import { User } from "../../core/entities/user";
+import { ulid } from "ulid";
 
 declare module "sst/node/auth" {
   export interface SessionTypes {
@@ -13,17 +14,35 @@ declare module "sst/node/auth" {
   }
 }
 
-const getOrCreateUserFromClaims = async (claims: Record<string, any>) => {
-  let user = (await User.fromEmail(claims.email!)).data;
-  if (!user) {
-    user = (
-      await User.create({
-        email: claims.email!,
-        name: claims.name,
-      })
-    ).data;
+function hashForSharding(str: string, numberOfShards: number) {
+  let hash = 0;
+  let i = 0;
+  let len = str.length;
+  while (i < len) {
+    hash = str.charCodeAt(i++) + ((hash << 5) - hash);
+    hash = hash & hash;
   }
-  return user;
+  hash = Math.abs(hash);
+  return hash % numberOfShards;
+}
+
+const getOrCreateUserFromClaims = async (
+  claims: Record<string, any>
+): Promise<User.Info> => {
+  let user = await User.get(claims.email!);
+  if (!user.data) {
+    const id = ulid();
+    user = await User.create({
+      id,
+      shardId: hashForSharding(id, 25),
+      email: claims.email!,
+      name: claims.name,
+    });
+  }
+  if (!user.data) {
+    throw new Error("User not found or created.");
+  }
+  return user.data;
 };
 
 export const handler = AuthHandler({
