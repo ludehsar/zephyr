@@ -5,7 +5,7 @@ import {
   LinkAdapter,
 } from "sst/node/auth";
 import { Config } from "sst/node/config";
-import { User } from "../../core/entities/user";
+import { User } from "../../../core/entities/user";
 import { ulid } from "ulid";
 
 declare module "sst/node/auth" {

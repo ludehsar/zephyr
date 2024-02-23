@@ -8,7 +8,7 @@ export const AuthStack = ({ stack }: StackContext) => {
   const GOOGLE_CLIENT_ID = new Config.Secret(stack, "GOOGLE_CLIENT_ID");
   const auth = new Auth(stack, "auth", {
     authenticator: {
-      handler: "packages/functions/auth/auth.handler",
+      handler: "packages/functions/src/auth/auth.handler",
       bind: [table, GOOGLE_CLIENT_ID, TABLE_NAME],
     },
   });

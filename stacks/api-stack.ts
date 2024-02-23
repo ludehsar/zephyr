@@ -13,10 +13,10 @@ export const ApiStack = ({ stack }: StackContext) => {
       "POST /graphql": {
         type: "graphql",
         function: {
-          handler: "packages/functions/graphql/graphql.handler",
+          handler: "packages/functions/src/graphql/graphql.handler",
         },
         pothos: {
-          schema: "packages/functions/graphql/schema.ts",
+          schema: "packages/functions/src/graphql/schema.ts",
           output: "graphql/schema.graphql",
           commands: [
             "npx genql --output ./graphql/genql --schema ./graphql/schema.graphql --esm",

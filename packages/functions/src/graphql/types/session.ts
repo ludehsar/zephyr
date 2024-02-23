@@ -1,5 +1,5 @@
 import { builder } from "../builder";
-import { User } from "../../../core/entities/user";
+import { User } from "../../../../core/entities/user";
 import { requireUser } from "../requireUser";
 
 const UserType = builder.objectRef<User.Info>("User").implement({
