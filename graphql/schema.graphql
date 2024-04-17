@@ -7,4 +7,5 @@ type User {
   name: String
   planId: String
   premiumTrialTaken: Boolean
+  userId: String!
 }

@@ -17,10 +17,6 @@ export const DatabaseStack = ({ stack, app }: StackContext) => {
         partitionKey: "gsi1pk",
         sortKey: "gsi1sk",
       },
-      gsi2: {
-        partitionKey: "gsi2pk",
-        sortKey: "gsi2sk",
-      },
     },
   });
   return {

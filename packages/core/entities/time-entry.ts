@@ -11,7 +11,7 @@ export const TimeEntryEntity = new Entity(
       service: "Zephyr",
     },
     attributes: {
-      id: {
+      invoiceId: {
         type: "string",
         required: true,
         readOnly: true,
@@ -47,7 +47,7 @@ export const TimeEntryEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["id"],
+          composite: ["invoiceId"],
         },
       },
       byProject: {
@@ -58,7 +58,7 @@ export const TimeEntryEntity = new Entity(
         },
         sk: {
           field: "gsi1sk",
-          composite: ["id"],
+          composite: ["invoiceId"],
         },
       },
     },
@@ -91,7 +91,7 @@ export function listTeamsByProjectId(projectId: string) {
 export function update(item: Info) {
   return TimeEntryEntity.update({
     developerId: item.developerId,
-    id: item.id,
+    invoiceId: item.invoiceId,
   })
     .data((attribute, operations) => {
       operations.set(attribute.note, item.note || "");
@@ -100,9 +100,9 @@ export function update(item: Info) {
     .go();
 }
 
-export function deletePermanently(id: string, developerId: string) {
+export function deletePermanently(invoiceId: string, developerId: string) {
   return TimeEntryEntity.delete({
     developerId,
-    id,
+    invoiceId,
   }).go();
 }

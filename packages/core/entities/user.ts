@@ -11,13 +11,8 @@ export const UserEntity = new Entity(
       service: "Zephyr",
     },
     attributes: {
-      id: {
+      userId: {
         type: "string",
-        required: true,
-        readOnly: true,
-      },
-      shardId: {
-        type: "number",
         required: true,
         readOnly: true,
       },
@@ -42,22 +37,22 @@ export const UserEntity = new Entity(
       primary: {
         pk: {
           field: "pk",
-          composite: ["email"],
+          composite: ["userId"],
         },
         sk: {
           field: "sk",
-          composite: [],
+          composite: ["userId"],
         },
       },
-      list: {
+      byEmail: {
         index: "gsi1",
         pk: {
           field: "gsi1pk",
-          composite: ["shardId"],
+          composite: ["email"],
         },
         sk: {
           field: "gsi1sk",
-          composite: ["id"],
+          composite: ["email"],
         },
       },
     },
@@ -67,10 +62,20 @@ export const UserEntity = new Entity(
 
 export type Info = EntityItem<typeof UserEntity>;
 
-export function get(email: string) {
+export function get(userId: string) {
   return UserEntity.get({
-    email,
+    userId,
   }).go();
+}
+
+export async function getByEmail(email: string) {
+  return (
+    await UserEntity.query
+      .byEmail({
+        email,
+      })
+      .go()
+  ).data.at(0);
 }
 
 export function create(item: Info) {
@@ -78,7 +83,7 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return UserEntity.update({ email: item.email })
+  return UserEntity.update({ userId: item.userId })
     .data((attribute, operations) => {
       operations.set(attribute.name, item.name || "");
       operations.set(attribute.planId, item.planId || "FREE");
@@ -90,8 +95,8 @@ export function update(item: Info) {
     .go();
 }
 
-export function deletePermanently(email: string) {
+export function deletePermanently(userId: string) {
   return UserEntity.delete({
-    email,
+    userId,
   }).go();
 }

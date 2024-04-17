@@ -11,7 +11,7 @@ export const InvoiceEntity = new Entity(
       service: "Zephyr",
     },
     attributes: {
-      id: {
+      invoiceId: {
         type: "string",
         required: true,
         readOnly: true,
@@ -50,7 +50,7 @@ export const InvoiceEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["id"],
+          composite: ["invoiceId"],
         },
       },
       byProject: {
@@ -61,7 +61,7 @@ export const InvoiceEntity = new Entity(
         },
         sk: {
           field: "gsi1sk",
-          composite: ["id"],
+          composite: ["invoiceId"],
         },
       },
     },
@@ -75,10 +75,10 @@ export function create(item: Info) {
   return InvoiceEntity.create({ ...item }).go();
 }
 
-export function get(id: string, developerId: string) {
+export function get(invoiceId: string, developerId: string) {
   return InvoiceEntity.get({
     developerId,
-    id,
+    invoiceId,
   }).go();
 }
 
@@ -98,9 +98,9 @@ export function listTeamsByProjectId(projectId: string) {
     .go();
 }
 
-export function deletePermanently(id: string, developerId: string) {
+export function deletePermanently(invoiceId: string, developerId: string) {
   return InvoiceEntity.delete({
     developerId,
-    id,
+    invoiceId,
   }).go();
 }

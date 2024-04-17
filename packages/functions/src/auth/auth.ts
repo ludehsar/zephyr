@@ -14,35 +14,24 @@ declare module "sst/node/auth" {
   }
 }
 
-function hashForSharding(str: string, numberOfShards: number) {
-  let hash = 0;
-  let i = 0;
-  let len = str.length;
-  while (i < len) {
-    hash = str.charCodeAt(i++) + ((hash << 5) - hash);
-    hash = hash & hash;
-  }
-  hash = Math.abs(hash);
-  return hash % numberOfShards;
-}
-
 const getOrCreateUserFromClaims = async (
   claims: Record<string, any>
 ): Promise<User.Info> => {
-  let user = await User.get(claims.email!);
-  if (!user.data) {
+  let user = await User.getByEmail(claims.email!);
+  if (!user) {
     const id = ulid();
-    user = await User.create({
-      id,
-      shardId: hashForSharding(id, 25),
-      email: claims.email!,
-      name: claims.name,
-    });
+    user = (
+      await User.create({
+        userId: id,
+        email: claims.email!,
+        name: claims.name,
+      })
+    ).data;
   }
-  if (!user.data) {
+  if (!user) {
     throw new Error("User not found or created.");
   }
-  return user.data;
+  return user;
 };
 
 export const handler = AuthHandler({

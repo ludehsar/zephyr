@@ -4,7 +4,7 @@ import { requireUser } from "../requireUser";
 
 const UserType = builder.objectRef<User.Info>("User").implement({
   fields: (t) => ({
-    userId: t.exposeString("id"),
+    userId: t.exposeString("userId"),
     email: t.exposeString("email"),
     name: t.exposeString("name", { nullable: true }),
     planId: t.exposeString("planId", { nullable: true }),

@@ -21,10 +21,6 @@ export const DeveloperEntity = new Entity(
         required: true,
         readOnly: true,
       },
-      teamId: {
-        type: "string",
-        required: true,
-      },
       hourlyRate: {
         type: "number",
         required: true,
@@ -94,9 +90,6 @@ export function update(item: Info) {
   })
     .data((attribute, operations) => {
       operations.set(attribute.hourlyRate, item.hourlyRate || 25);
-      if (item.teamId) {
-        operations.set(attribute.teamId, item.teamId);
-      }
     })
     .go();
 }

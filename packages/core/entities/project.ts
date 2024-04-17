@@ -11,7 +11,7 @@ export const ProjectEntity = new Entity(
       service: "Zephyr",
     },
     attributes: {
-      id: {
+      projectId: {
         type: "string",
         required: true,
         readOnly: true,
@@ -25,11 +25,11 @@ export const ProjectEntity = new Entity(
       primary: {
         pk: {
           field: "pk",
-          composite: ["id"],
+          composite: ["projectId"],
         },
         sk: {
           field: "sk",
-          composite: [],
+          composite: ["projectId"],
         },
       },
     },
@@ -39,9 +39,9 @@ export const ProjectEntity = new Entity(
 
 export type Info = EntityItem<typeof ProjectEntity>;
 
-export function get(id: string) {
+export function get(projectId: string) {
   return ProjectEntity.get({
-    id,
+    projectId,
   }).go();
 }
 
@@ -50,15 +50,15 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return ProjectEntity.update({ id: item.id })
+  return ProjectEntity.update({ projectId: item.projectId })
     .data((attribute, operations) => {
       operations.set(attribute.title, item.title || "");
     })
     .go();
 }
 
-export function deletePermanently(id: string) {
+export function deletePermanently(projectId: string) {
   return ProjectEntity.delete({
-    id,
+    projectId,
   }).go();
 }
