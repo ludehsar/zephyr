@@ -1,4 +1,16 @@
+type Mutation {
+  createProject(projectId: String!, title: String!): Project!
+  deleteProject(projectId: String!): Project!
+  updateProject(projectId: String!, title: String!): Project!
+}
+
+type Project {
+  projectId: String
+  title: String
+}
+
 type Query {
+  project(projectId: String!): Project
   session: User
 }
 
