@@ -5,7 +5,8 @@ import {
   LinkAdapter,
 } from "sst/node/auth";
 import { Config } from "sst/node/config";
-import { User } from "../../core/entities/user";
+import { User } from "../../../core/entities/user";
+import { ulid } from "ulid";
 
 declare module "sst/node/auth" {
   export interface SessionTypes {
@@ -13,15 +14,22 @@ declare module "sst/node/auth" {
   }
 }
 
-const getOrCreateUserFromClaims = async (claims: Record<string, any>) => {
-  let user = (await User.fromEmail(claims.email!)).data;
+const getOrCreateUserFromClaims = async (
+  claims: Record<string, any>
+): Promise<User.Info> => {
+  let user = (await User.getByEmail(claims.email!)).data[0];
   if (!user) {
+    const id = ulid();
     user = (
       await User.create({
+        userId: id,
         email: claims.email!,
         name: claims.name,
       })
     ).data;
+  }
+  if (!user) {
+    throw new Error("User not found or created.");
   }
   return user;
 };

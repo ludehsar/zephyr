@@ -7,40 +7,52 @@ export const UserEntity = new Entity(
   {
     model: {
       version: "1",
-      entity: "user",
-      service: "auth",
+      entity: "User",
+      service: "Zephyr",
     },
     attributes: {
+      userId: {
+        type: "string",
+        required: true,
+        readOnly: true,
+      },
       email: {
         type: "string",
         required: true,
+        readOnly: true,
       },
       name: {
         type: "string",
-        default: "",
       },
       premiumTrialTaken: {
         type: "boolean",
         default: false,
       },
-      planId: {
-        type: "string",
-        default: "",
-      },
-      profilePicture: {
-        type: "string",
-        default: "",
+      plan: {
+        type: ["FREE", "PREMIUM", "BUSINESS"] as const,
+        default: "FREE",
       },
     },
     indexes: {
-      byEmail: {
+      primary: {
         pk: {
           field: "pk",
-          composite: ["email"],
+          composite: ["userId"],
         },
         sk: {
           field: "sk",
-          composite: [],
+          composite: ["userId"],
+        },
+      },
+      byEmail: {
+        index: "gsi1",
+        pk: {
+          field: "gsi1pk",
+          composite: ["email"],
+        },
+        sk: {
+          field: "gsi1sk",
+          composite: ["email"],
         },
       },
     },
@@ -50,10 +62,18 @@ export const UserEntity = new Entity(
 
 export type Info = EntityItem<typeof UserEntity>;
 
-export function fromEmail(email: string) {
+export function get(userId: string) {
   return UserEntity.get({
-    email,
+    userId,
   }).go();
+}
+
+export function getByEmail(email: string) {
+  return UserEntity.query
+    .byEmail({
+      email,
+    })
+    .go();
 }
 
 export function create(item: Info) {
@@ -61,9 +81,20 @@ export function create(item: Info) {
 }
 
 export function update(item: Info) {
-  return UserEntity.patch({ email: item.email })
-    .set({
-      ...item,
+  return UserEntity.update({ userId: item.userId })
+    .data((attribute, operations) => {
+      operations.set(attribute.name, item.name || "");
+      operations.set(attribute.plan, item.plan || "FREE");
+      operations.set(
+        attribute.premiumTrialTaken,
+        item.premiumTrialTaken || false
+      );
     })
     .go();
+}
+
+export function deletePermanently(userId: string) {
+  return UserEntity.delete({
+    userId,
+  }).go();
 }
