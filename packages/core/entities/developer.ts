@@ -1,5 +1,4 @@
 import { Entity, EntityItem } from "electrodb";
-import DataLoader from "dataloader";
 import { Dynamo } from "./dynamo";
 
 export * as Developer from "./developer";
@@ -68,46 +67,20 @@ export function get(developerId: string, projectId: string) {
   }).go();
 }
 
-const developersDataLoader = new DataLoader<
-  string,
-  { data: Info[]; cursor: string | null }
->((keys) => {
-  const promises: Promise<{ data: Info[]; cursor: string | null }>[] = [];
-  keys.map((key) =>
-    promises.push(
-      DeveloperEntity.query
-        .byProject({
-          projectId: key,
-        })
-        .go()
-    )
-  );
-  return Promise.all(promises);
-});
-
 export function listDevelopersByProjectId(projectId: string) {
-  return developersDataLoader.load(projectId);
+  return DeveloperEntity.query
+    .byProject({
+      projectId,
+    })
+    .go();
 }
 
-const projectsDataLoader = new DataLoader<
-  string,
-  { data: Info[]; cursor: string | null }
->((keys) => {
-  const promises: Promise<{ data: Info[]; cursor: string | null }>[] = [];
-  keys.map((key) =>
-    promises.push(
-      DeveloperEntity.query
-        .byDeveloper({
-          developerId: key,
-        })
-        .go()
-    )
-  );
-  return Promise.all(promises);
-});
-
 export function listProjectsByDeveloperId(developerId: string) {
-  return projectsDataLoader.load(developerId);
+  return DeveloperEntity.query
+    .byDeveloper({
+      developerId,
+    })
+    .go();
 }
 
 export function update(item: Info) {
