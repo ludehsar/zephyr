@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1559.0",
+    "dataloader": "^2.2.2",
     "electrodb": "^2.13.1"
   }
 }

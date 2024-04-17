@@ -28,7 +28,7 @@ export const UserEntity = new Entity(
         type: "boolean",
         default: false,
       },
-      planId: {
+      plan: {
         type: ["FREE", "PREMIUM", "BUSINESS"] as const,
         default: "FREE",
       },
@@ -84,7 +84,7 @@ export function update(item: Info) {
   return UserEntity.update({ userId: item.userId })
     .data((attribute, operations) => {
       operations.set(attribute.name, item.name || "");
-      operations.set(attribute.planId, item.planId || "FREE");
+      operations.set(attribute.plan, item.plan || "FREE");
       operations.set(
         attribute.premiumTrialTaken,
         item.premiumTrialTaken || false

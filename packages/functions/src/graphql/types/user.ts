@@ -2,12 +2,12 @@ import { builder } from "../builder";
 import { User } from "../../../../core/entities/user";
 import { requireUser } from "../requireUser";
 
-const UserType = builder.objectRef<User.Info>("User").implement({
+export const UserType = builder.objectRef<User.Info>("User").implement({
   fields: (t) => ({
     userId: t.exposeString("userId"),
     email: t.exposeString("email"),
     name: t.exposeString("name", { nullable: true }),
-    planId: t.exposeString("planId", { nullable: true }),
+    plan: t.exposeString("plan", { nullable: true }),
     premiumTrialTaken: t.exposeBoolean("premiumTrialTaken", { nullable: true }),
   }),
 });

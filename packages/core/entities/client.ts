@@ -1,4 +1,5 @@
 import { Entity, EntityItem } from "electrodb";
+import DataLoader from "dataloader";
 import { Dynamo } from "./dynamo";
 
 export * as Client from "./client";
@@ -62,20 +63,46 @@ export function get(clientId: string, projectId: string) {
   }).go();
 }
 
+const clientsDataLoader = new DataLoader<
+  string,
+  { data: Info[]; cursor: string | null }
+>((keys) => {
+  const promises: Promise<{ data: Info[]; cursor: string | null }>[] = [];
+  keys.map((key) =>
+    promises.push(
+      ClientEntity.query
+        .byProject({
+          projectId: key,
+        })
+        .go()
+    )
+  );
+  return Promise.all(promises);
+});
+
 export function listClientsByProjectId(projectId: string) {
-  return ClientEntity.query
-    .byProject({
-      projectId,
-    })
-    .go();
+  return clientsDataLoader.load(projectId);
 }
 
+const projectsDataLoader = new DataLoader<
+  string,
+  { data: Info[]; cursor: string | null }
+>((keys) => {
+  const promises: Promise<{ data: Info[]; cursor: string | null }>[] = [];
+  keys.map((key) =>
+    promises.push(
+      ClientEntity.query
+        .byClient({
+          clientId: key,
+        })
+        .go()
+    )
+  );
+  return Promise.all(promises);
+});
+
 export function listProjectsByClientId(clientId: string) {
-  return ClientEntity.query
-    .byClient({
-      clientId: clientId,
-    })
-    .go();
+  return projectsDataLoader.load(clientId);
 }
 
 export function deletePermanently(projectId: string, clientId: string) {
