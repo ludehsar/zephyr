@@ -68,14 +68,12 @@ export function get(userId: string) {
   }).go();
 }
 
-export async function getByEmail(email: string) {
-  return (
-    await UserEntity.query
-      .byEmail({
-        email,
-      })
-      .go()
-  ).data.at(0);
+export function getByEmail(email: string) {
+  return UserEntity.query
+    .byEmail({
+      email,
+    })
+    .go();
 }
 
 export function create(item: Info) {

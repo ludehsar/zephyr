@@ -18,7 +18,7 @@ builder.queryFields((t) => ({
     nullable: true,
     resolve: async () => {
       const session = requireUser();
-      return (await User.get(session.properties.email)).data;
+      return (await User.getByEmail(session.properties.email)).data[0];
     },
   }),
 }));

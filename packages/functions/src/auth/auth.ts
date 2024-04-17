@@ -17,7 +17,7 @@ declare module "sst/node/auth" {
 const getOrCreateUserFromClaims = async (
   claims: Record<string, any>
 ): Promise<User.Info> => {
-  let user = await User.getByEmail(claims.email!);
+  let user = (await User.getByEmail(claims.email!)).data[0];
   if (!user) {
     const id = ulid();
     user = (
